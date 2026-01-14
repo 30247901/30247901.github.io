@@ -1,0 +1,119 @@
+body {
+    margin:0;
+    line-height:1.5;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.banner {
+    text-align: center;
+}
+
+.banner img {
+    height:60px;
+    padding:.5rem;
+    margin:auto;
+}
+
+nav {
+    display:block;
+    margin: 0 auto;
+    text-align:center;
+    background-color: #333;
+    height:30px;
+    overflow:hidden;
+}
+
+nav a {
+    background-color: #555;
+    color:#fff;
+    padding:16px;
+    line-height:30px;
+    text-decoration: none;
+}
+
+nav a:hover{
+    background-color: #777;
+}
+
+main {
+    margin: 10px auto;
+    max-width:75%;
+    position:relative;
+}
+
+.kontakt input[type="text"], textarea{
+    width:100%;
+}
+
+figure {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding:.5rem;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
+.fr {
+    float:right;
+}
+
+.fl {
+    float:left;
+}
+
+figure.fl {
+    margin-right:1rem;
+}
+
+figure.fr {
+    margin-left:1rem;
+}
+
+figcaption {
+    font-style:italic;
+    font-size:10pt;
+    clear:both;
+}
+
+.prodbox {
+    display:flex; width:100%;
+}
+
+.prodimg{
+    text-align:center;
+    padding-right:1em;
+}
+.prodimg img {
+    padding: 1em;
+}
+
+.proddsc {
+    vertical-align: top;
+}
+
+.total {
+    background-color: #333;
+    color:#fff;
+    padding: 1em;
+    
+}
+
+#total {
+    text-align:right;
+}
+
+.total2 {
+    width:200px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+}
+
+.buy {
+    text-align:center;
+}
+.buy a{
+    color:aqua;
+    font-size:x-large;
+}

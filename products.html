@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Widgets and Doohickeys</title>
+        <link rel=stylesheet href="style.css">
+    </head>
+    <body>
+        <div class="banner"><img src="assets/banner2.svg"></div>
+        <nav>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="products.html">Products</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+        <main>
+            <h1>Flagship Products</h1>
+            <table class="products">
+                <tr>
+                    <td class="prodimg">
+                        <img src="assets/gauge.png">
+                    </td>
+                    <td class="proddsc">
+                        <strong>PX-25 Auto-Gauge - £199.99</strong>
+                    <div>Item description placeholder</div>
+                    <a href="javascript:AddToCart('Gauge')">Add to Cart</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prodimg">
+                        <img src="assets/motor.png">
+                    </td>
+                    <td class="proddsc">
+                        <strong>CX-5400 Linear Dyno-Actuator - £79.99</strong>
+                        <div>Item description placeholder</div>
+                        <a href="javascript:AddToCart('Motor')">Add to Cart</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="prodimg">
+                        <img src="assets/socks.png">
+                    </td>
+                    <td class="proddsc">
+                        <strong>Promotional Socks - £0.50</strong>
+                        <div>Item description placeholder</div>
+                        <a href="javascript:AddToCart('Socks')">Add to Cart</a>
+                    </td>
+                </tr>
+            </table>
+            <p style="text-align:center;">
+                Want to purchase something not available here?
+                Please <a href="contact.html">send us an inquiry</a>.
+            </p>
+            
+            
+        </main>
+        <div class="total">
+            <div class="total2">
+                <span>Your Total:</span>
+                <span id="total">£0.00</span>
+            </div>
+        </br>
+            <div class="buy"><a href="javascript:Buy()">BUY!</a></div>
+        </div>
+    </body>
+    <script>
+        const catalog = { // prices in pence
+            "Gauge": 19999,
+            "Motor":  7999,
+            "Socks":    50,
+        }
+
+        const Cart = {
+            key: 'wd-cart',               // sessionStorage key
+            load() {
+                try {
+                    return JSON.parse(sessionStorage.getItem(this.key)) || {};
+                } catch { return {}; }
+            },
+            save(items) {
+                sessionStorage.setItem(this.key, JSON.stringify(items));
+            },
+            add(item) {                    // increment quantity
+                const items = this.load();
+                items[item] = (items[item] || 0) + 1;
+                this.save(items);
+                console.log(items);
+                this.renderTotal();
+            },
+            totalPence() {
+                const items = this.load();
+                return Object.entries(items)
+                              .reduce((sum, [name, qty]) =>
+                                sum + catalog[name] * qty, 0);
+            },
+            renderTotal() {
+                document.getElementById('total').textContent =
+                    PriceToString(this.totalPence());
+            },
+            clear() {                      // called after fake “buy”
+                sessionStorage.removeItem(this.key);
+                this.renderTotal();
+            }
+        };
+
+        let total = 0;
+
+        function PriceToString(price) {
+            return "£" + (price / 100).toFixed(2);
+        }
+
+        function AddToCart(item) {
+            Cart.add(item);
+        }
+
+        function Buy() {
+            const items = Cart.load();
+            const lines = Object.entries(items)
+                                .map(([name, qty]) =>
+                                    `${qty} x ${name}  ${PriceToString(catalog[name] * qty)}`);
+            if (!lines.length) {
+                alert('Your cart is empty.');
+                return;
+            }
+            alert('Thank you for your order\n\n' +
+                lines.join('\n') + '\n\nTotal: ' + PriceToString(Cart.totalPence()));
+            Cart.clear();
+        }
+
+        /* ----------  show correct total when user comes back to the page  ---------- */
+        Cart.renderTotal();   // runs on every load / reload
+
+    </script>
+</html>
