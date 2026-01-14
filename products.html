@@ -112,10 +112,15 @@
         }
 
         function AddToCart(item) {
+            var audio = new Audio('assets/online.wav');
+            audio.play();
             Cart.add(item);
         }
 
         function Buy() {
+            var audio = new Audio('assets/type.wav');
+            audio.play();
+
             const items = Cart.load();
             const lines = Object.entries(items)
                                 .map(([name, qty]) =>
