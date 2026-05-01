@@ -1,0 +1,5 @@
+{
+    "Gauge": { "price": 19999, "image": "gauge.png" },
+    "Motor": { "price":  7999, "image": "motor.png" },
+    "Socks": { "price":    50, "image": "socks.png" }
+}

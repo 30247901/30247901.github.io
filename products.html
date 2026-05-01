@@ -12,12 +12,13 @@
                 <a href="index.html">Home</a>
                 <a href="about.html">About</a>
                 <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
                 <a href="contact.html">Contact</a>
             </div>
         </nav>
         <main>
             <h1>Flagship Products</h1>
-            <table class="products">
+            <table class="products" align="center">
                 <tr>
                     <td class="prodimg">
                         <img src="assets/gauge.png">
@@ -65,72 +66,35 @@
             <div class="buy"><a href="javascript:Buy()">BUY!</a></div>
         </div>
     </body>
+    <script src="cart.js"></script>
     <script>
-        const catalog = { // prices in pence
-            "Gauge": 19999,
-            "Motor":  7999,
-            "Socks":    50,
-        }
+/* ---------- 2.  helpers ---------- */
 
-        const Cart = {
-            key: 'wd-cart',               // sessionStorage key
-            load() {
-                try {
-                    return JSON.parse(sessionStorage.getItem(this.key)) || {};
-                } catch { return {}; }
-            },
-            save(items) {
-                sessionStorage.setItem(this.key, JSON.stringify(items));
-            },
-            add(item) {                    // increment quantity
-                const items = this.load();
-                items[item] = (items[item] || 0) + 1;
-                this.save(items);
-                console.log(items);
-                this.renderTotal();
-            },
-            totalPence() {
-                const items = this.load();
-                return Object.entries(items)
-                              .reduce((sum, [name, qty]) =>
-                                sum + catalog[name] * qty, 0);
-            },
-            renderTotal() {
-                document.getElementById('total').textContent =
-                    PriceToString(this.totalPence());
-            },
-            clear() {                      // called after fake “buy”
-                sessionStorage.removeItem(this.key);
-                this.renderTotal();
-            }
-        };
+function AddToCart(item) {
+    new Audio('assets/online.wav').play();
+    Cart.add(item);
+}
 
-        let total = 0;
+function Buy() {
+    new Audio('assets/type.wav').play();
+    const items = Cart.load();
+    const lines = Object.entries(items)
+        .map(([name, qty]) =>
+            `${qty} x ${name}  ${PriceToString(window.catalog[name].price * qty)}`);
+    if (!lines.length) { alert('Your cart is empty.'); return; }
+    alert('Thank you for your order\n\n' +
+            lines.join('\n') + '\n\nTotal: ' + PriceToString(Cart.totalPence()));
+    Cart.clear();
+}
 
-        function PriceToString(price) {
-            return "£" + (price / 100).toFixed(2);
-        }
-
-        function AddToCart(item) {
-            Cart.add(item);
-        }
-
-        function Buy() {
-            const items = Cart.load();
-            const lines = Object.entries(items)
-                                .map(([name, qty]) =>
-                                    `${qty} x ${name}  ${PriceToString(catalog[name] * qty)}`);
-            if (!lines.length) {
-                alert('Your cart is empty.');
-                return;
-            }
-            alert('Thank you for your order\n\n' +
-                lines.join('\n') + '\n\nTotal: ' + PriceToString(Cart.totalPence()));
-            Cart.clear();
-        }
-
-        /* ----------  show correct total when user comes back to the page  ---------- */
-        Cart.renderTotal();   // runs on every load / reload
-
+/* ---------- 3.  load catalog.json then start ---------- */
+fetch('catalog.json')
+    .then(r => r.json())
+    .then(data => {
+        window.catalog = data;          // make it globally available
+        Cart.renderTotal();             // show 0.00
+        /* if you build DOM buttons dynamically you’d do it here */
+    })
+    .catch(err => console.error('Could not load catalog:', err));
     </script>
 </html>

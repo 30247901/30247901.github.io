@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Widgets and Doohickeys</title>
+        <link rel=stylesheet href="style.css">
+    </head>
+    <body>
+        <div class="banner"><img src="assets/banner2.svg"></div>
+        <nav>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </nav>
+        <main>
+            <button onclick="renderCart()">Render</button>
+            <table align="center" width="100%">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="items"></tbody>
+            </table>
+        </main>
+    </body>
+    <script src="cart.js"></script>
+    <script>
+const tbody = document.getElementById('items');
+tbody.addEventListener('click', e => {
+    if (e.target.dataset.delta) {
+        const item  = e.target.dataset.item;
+        const delta = +e.target.dataset.delta;
+        Cart.add(item, delta);   // add 1 or -1
+        renderCart();            // redraw table
+        Cart.renderTotal();      // update summary
+    }
+});
+
+function renderCart() {
+    const tbody = document.getElementById('items');
+    tbody.innerHTML = '';               // 1. blank slate
+
+    const items = Cart.load();          // 2. live cart
+    let html  = '';                     // 3. build string
+
+    for (const [name, qty] of Object.entries(items)) {
+        const product = window.catalog[name];
+        const lineTotal = product.price * qty;
+
+        html += `
+          <tr>
+            <td>${name}</td>
+            <td>${PriceToString(product.price)}</td>
+            <td>
+               <button data-delta="-1" data-item="${name}">-</button>
+               ${qty}
+               <button data-delta="1"  data-item="${name}">+</button>
+            </td>
+            <td>${PriceToString(lineTotal)}</td>
+          </tr>`;
+    }
+
+    tbody.innerHTML = html;
+
+}
+
+fetch('catalog.json')
+    .then(r => r.json())
+    .then(data => {
+      window.catalog = data;      // 1️ catalog now exists
+      renderCart();               // 2️ safe to draw the table
+    })
+    .catch(err => console.error('catalog failed', err));
+
+    </script>
+</html>
