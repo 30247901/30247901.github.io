@@ -5,9 +5,17 @@ const Cart = {
         catch { return {}; }
     },
     save(items) { sessionStorage.setItem(this.key, JSON.stringify(items)); },
-    add(item) {
+    add(item, delta=1) { // 1. Accept the delta parameter
         const items = this.load();
-        items[item] = (items[item] || 0) + 1;
+        
+        // 2. Use the delta instead of hardcoded +1
+        items[item] = (items[item] || 0) + delta;
+
+        // 3. Optional: Clean up items with 0 or negative quantity
+        if (items[item] <= 0) {
+            delete items[item];
+        }
+
         this.save(items);
         this.renderTotal();
     },
